@@ -5,7 +5,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 
-import java.net.Inet4Address;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -26,18 +25,11 @@ public class PortsController {
                 if (!ports[i].isOpen())
                     ports[i].openPort();
 
-                try {
-                    wait(500);
+                byte[] readBuffer = new byte[ports[i].bytesAvailable()];
+                int numRead = ports[i].readBytes(readBuffer, readBuffer.length);
 
-                    byte[] readBuffer = new byte[ports[i].bytesAvailable()];
-                    int numRead = ports[i].readBytes(readBuffer, readBuffer.length);
-
-                    map.put("readBuffer", Arrays.toString(readBuffer));
-                    map.put("numRead", String.valueOf(numRead));
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-
+                map.put("readBuffer", Arrays.toString(readBuffer));
+                map.put("numRead", String.valueOf(numRead));
                 map.put("isOpen", String.valueOf(ports[i].isOpen()));
                 map.put("Id", String.valueOf(i));
                 map.put("PortDescription", ports[i].getPortDescription());
@@ -61,9 +53,10 @@ public class PortsController {
                 map.put("DeviceReadBufferSize", String.valueOf(ports[i].getDeviceReadBufferSize()));
                 map.put("DeviceWriteBufferSize", String.valueOf(ports[i].getDeviceWriteBufferSize()));
 
-
                 ports[i].closePort();
             }
+
+            logger.info(map.toString());
 
             return new HashMap<>(map);
         }
