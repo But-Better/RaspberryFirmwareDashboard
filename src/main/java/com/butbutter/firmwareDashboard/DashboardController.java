@@ -20,4 +20,9 @@ public class DashboardController {
         return new ResponseEntity<>(portsController.getPorts(), HttpStatus.OK);
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<Object> showOne(int id){
+        return new ResponseEntity<>(portsController.readPort(id), HttpStatus.OK);
+    }
+
 }
