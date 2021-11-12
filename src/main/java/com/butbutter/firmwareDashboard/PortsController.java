@@ -17,34 +17,33 @@ public class PortsController {
 
     public String readPort(int id) {
         AtomicReference<String> message = new AtomicReference<>();
-        new Thread(() -> {
-            SerialPort comPort = SerialPort.getCommPorts()[id];
-            comPort.openPort();
-            try {
-                int start = 0;
-                int stop = 2000;
-                while (start < stop) {
-                    while (comPort.bytesAvailable() == 0)
-                        Thread.sleep(20);
 
-                    byte[] readBuffer = new byte[comPort.bytesAvailable()];
-                    int numRead = comPort.readBytes(readBuffer, readBuffer.length);
-                    StringBuffer stringBuffer = new StringBuffer();
-                    stringBuffer.append(numRead);
-                    start++;
+        SerialPort comPort = SerialPort.getCommPorts()[id];
+        comPort.openPort();
+        try {
+            int start = 0;
+            int stop = 2000;
+            while (start < stop) {
+                while (comPort.bytesAvailable() == 0)
+                    Thread.sleep(20);
 
-                    logger.info(String.valueOf(start));
+                byte[] readBuffer = new byte[comPort.bytesAvailable()];
+                int numRead = comPort.readBytes(readBuffer, readBuffer.length);
+                StringBuffer stringBuffer = new StringBuffer();
+                stringBuffer.append(numRead);
+                start++;
 
-                    if (start >= stop) {
-                        logger.info(stringBuffer.toString());
-                        message.set(stringBuffer.toString());
-                    }
+                logger.info(String.valueOf(start));
+
+                if (start >= stop) {
+                    logger.info(stringBuffer.toString());
+                    message.set(stringBuffer.toString());
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
             }
-            comPort.closePort();
-        });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        comPort.closePort();
 
         return message.get();
     }
