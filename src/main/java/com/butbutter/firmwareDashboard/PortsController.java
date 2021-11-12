@@ -26,20 +26,23 @@ public class PortsController {
                 map.put("PortDescription", ports[i].getPortDescription());
                 map.put("SystemPortName", ports[i].getSystemPortName());
                 map.put("DescriptivePortName", ports[i].getDescriptivePortName());
-
-                ports[i].openPort();
-                try {
-                    long timer = 0;
-                    while (timer < 2000) {
-                        byte[] readBuffer = new byte[ports[i].bytesAvailable()];
-                        int numRead = ports[i].readBytes(readBuffer, readBuffer.length);
-                        System.out.println("Read " + numRead + " bytes.");
-                        map.put("Read-Informations Nr. " + i, String.valueOf(numRead));
-                        timer++;
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                map.put("bytesAvailable", String.valueOf(ports[i].bytesAvailable()));
+                map.put("CTS", String.valueOf(ports[i].getCTS()));
+                map.put("DCD", String.valueOf(ports[i].getDCD()));
+                map.put("RI", String.valueOf(ports[i].getRI()));
+                map.put("DSR", String.valueOf(ports[i].getDSR()));
+                map.put("DTR", String.valueOf(ports[i].getDTR()));
+                map.put("NumDataBits", String.valueOf(ports[i].getNumDataBits()));
+                map.put("BaudRate", String.valueOf(ports[i].getBaudRate()));
+                map.put("FlowControlSettings", String.valueOf(ports[i].getFlowControlSettings()));
+                map.put("Parity", String.valueOf(ports[i].getParity()));
+                map.put("RTS", String.valueOf(ports[i].getRTS()));
+                map.put("OutputStream", String.valueOf(ports[i].getOutputStream()));
+                map.put("InputStream", String.valueOf(ports[i].getInputStream()));
+                map.put("ReadTimeout", String.valueOf(ports[i].getReadTimeout()));
+                map.put("Class", String.valueOf(ports[i].getClass()));
+                map.put("DeviceReadBufferSize", String.valueOf(ports[i].getDeviceReadBufferSize()));
+                map.put("DeviceWriteBufferSize", String.valueOf(ports[i].getDeviceWriteBufferSize()));
             }
 
             return new HashMap<>(map);
