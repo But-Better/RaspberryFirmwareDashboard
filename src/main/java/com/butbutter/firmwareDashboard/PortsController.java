@@ -59,8 +59,14 @@ public class PortsController {
                 if (!ports[i].isOpen())
                     ports[i].openPort();
 
-                byte[] readBuffer = new byte[ports[i].bytesAvailable()];
-                int numRead = ports[i].readBytes(readBuffer, readBuffer.length);
+                byte[] readBuffer = new byte[0];
+                int numRead = 0;
+                try {
+                    readBuffer = new byte[ports[i].bytesAvailable()];
+                    numRead = ports[i].readBytes(readBuffer, readBuffer.length);
+                } catch (Exception e) {
+                    logger.error(e.getMessage());
+                }
 
                 map.put("readBuffer", Arrays.toString(readBuffer));
                 map.put("numRead", String.valueOf(numRead));
