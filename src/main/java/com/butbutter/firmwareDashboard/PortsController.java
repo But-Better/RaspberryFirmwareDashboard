@@ -1,6 +1,8 @@
 package com.butbutter.firmwareDashboard;
 
 import com.fazecast.jSerialComm.SerialPort;
+import com.fazecast.jSerialComm.SerialPortDataListener;
+import com.fazecast.jSerialComm.SerialPortEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -14,6 +16,30 @@ import java.util.concurrent.atomic.AtomicReference;
 public class PortsController {
 
     private static final Logger logger = LoggerFactory.getLogger(PortsController.class);
+
+    public SerialPortDataListener readPort(int id) {
+        SerialPort comPort = SerialPort.getCommPorts()[0];
+        comPort.openPort();
+        SerialPortDataListener serialPortDataListener = new SerialPortDataListener() {
+            @Override
+            public int getListeningEvents() {
+                return SerialPort.LISTENING_EVENT_DATA_AVAILABLE;
+            }
+
+
+            @Override
+            public void serialEvent(SerialPortEvent event) {
+                if (event.getEventType() != SerialPort.LISTENING_EVENT_DATA_AVAILABLE)
+                    return;
+                byte[] newData = new byte[comPort.bytesAvailable()];
+                int numRead = comPort.readBytes(newData, newData.length);
+                logger.info("Read " + numRead + " bytes.");
+            }
+        };
+        comPort.addDataListener(serialPortDataListener);
+
+        return serialPortDataListener;
+    }
 
     public Map<String, String> getPorts() {
         SerialPort[] ports = SerialPort.getCommPorts();
