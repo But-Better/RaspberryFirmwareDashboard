@@ -22,6 +22,10 @@ public class PortsController {
 
         if (ports.length != 0) {
             for (int i = 0; i < ports.length; i++) {
+
+                if (!ports[i].isOpen())
+                    ports[i].openPort();
+
                 map.put("Id", String.valueOf(i));
                 map.put("PortDescription", ports[i].getPortDescription());
                 map.put("SystemPortName", ports[i].getSystemPortName());
@@ -43,6 +47,8 @@ public class PortsController {
                 map.put("Class", String.valueOf(ports[i].getClass()));
                 map.put("DeviceReadBufferSize", String.valueOf(ports[i].getDeviceReadBufferSize()));
                 map.put("DeviceWriteBufferSize", String.valueOf(ports[i].getDeviceWriteBufferSize()));
+
+                ports[i].closePort();
             }
 
             return new HashMap<>(map);
