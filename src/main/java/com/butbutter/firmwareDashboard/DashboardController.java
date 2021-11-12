@@ -1,6 +1,7 @@
 package com.butbutter.firmwareDashboard;
 
 import com.fazecast.jSerialComm.SerialPort;
+import com.fazecast.jSerialComm.SerialPortDataListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +24,12 @@ public class DashboardController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Object> showOne(@PathVariable int id){
-        portsController.readPort(id);
+        SerialPortDataListener serialPortDataListener = portsController.readPort(id);
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         return new ResponseEntity<>("Dummy", HttpStatus.OK);
     }
 

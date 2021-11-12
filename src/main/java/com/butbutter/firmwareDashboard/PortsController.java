@@ -26,7 +26,6 @@ public class PortsController {
                 return SerialPort.LISTENING_EVENT_DATA_AVAILABLE;
             }
 
-
             @Override
             public void serialEvent(SerialPortEvent event) {
                 if (event.getEventType() != SerialPort.LISTENING_EVENT_DATA_AVAILABLE)
