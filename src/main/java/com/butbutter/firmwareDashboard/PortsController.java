@@ -26,6 +26,18 @@ public class PortsController {
                 if (!ports[i].isOpen())
                     ports[i].openPort();
 
+                try {
+                    wait(500);
+
+                    byte[] readBuffer = new byte[ports[i].bytesAvailable()];
+                    int numRead = ports[i].readBytes(readBuffer, readBuffer.length);
+
+                    map.put("readBuffer", Arrays.toString(readBuffer));
+                    map.put("numRead", String.valueOf(numRead));
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
                 map.put("isOpen", String.valueOf(ports[i].isOpen()));
                 map.put("Id", String.valueOf(i));
                 map.put("PortDescription", ports[i].getPortDescription());
@@ -48,6 +60,7 @@ public class PortsController {
                 map.put("Class", String.valueOf(ports[i].getClass()));
                 map.put("DeviceReadBufferSize", String.valueOf(ports[i].getDeviceReadBufferSize()));
                 map.put("DeviceWriteBufferSize", String.valueOf(ports[i].getDeviceWriteBufferSize()));
+
 
                 ports[i].closePort();
             }
