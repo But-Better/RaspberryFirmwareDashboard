@@ -26,6 +26,7 @@ public class PortsController {
                 if (!ports[i].isOpen())
                     ports[i].openPort();
 
+                map.put("isOpen", String.valueOf(ports[i].isOpen()));
                 map.put("Id", String.valueOf(i));
                 map.put("PortDescription", ports[i].getPortDescription());
                 map.put("SystemPortName", ports[i].getSystemPortName());
