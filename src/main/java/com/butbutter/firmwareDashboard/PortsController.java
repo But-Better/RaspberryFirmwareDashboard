@@ -34,7 +34,10 @@ public class PortsController {
                         stringBuffer.append(numRead);
                         start++;
 
+                        logger.info(String.valueOf(start));
+
                         if (start >= stop) {
+                            logger.info(stringBuffer.toString());
                             message.set(stringBuffer.toString());
                         }
                     }
