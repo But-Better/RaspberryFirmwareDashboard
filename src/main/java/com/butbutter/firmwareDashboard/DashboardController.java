@@ -23,6 +23,7 @@ public class DashboardController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Object> showOne(@PathVariable int id){
+        portsController.readPort(id);
         return new ResponseEntity<>("Dummy", HttpStatus.OK);
     }
 
