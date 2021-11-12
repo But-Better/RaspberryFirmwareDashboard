@@ -26,6 +26,23 @@ public class PortsController {
                 map.put("PortDescription", ports[i].getPortDescription());
                 map.put("SystemPortName", ports[i].getSystemPortName());
                 map.put("DescriptivePortName", ports[i].getDescriptivePortName());
+
+                ports[i].openPort();
+                try {
+                    long timer = 0;
+                    while (timer < 2000) {
+                        while (ports[i].bytesAvailable() == 0)
+                            Thread.sleep(50);
+
+                        byte[] readBuffer = new byte[ports[i].bytesAvailable()];
+                        int numRead = ports[i].readBytes(readBuffer, readBuffer.length);
+                        System.out.println("Read " + numRead + " bytes.");
+                        map.put("Read-Informations Nr. " + i, String.valueOf(numRead));
+                        timer++;
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
 
             return new HashMap<>(map);
