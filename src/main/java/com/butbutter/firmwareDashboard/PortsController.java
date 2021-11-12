@@ -31,9 +31,6 @@ public class PortsController {
                 try {
                     long timer = 0;
                     while (timer < 2000) {
-                        while (ports[i].bytesAvailable() == 0)
-                            Thread.sleep(50);
-
                         byte[] readBuffer = new byte[ports[i].bytesAvailable()];
                         int numRead = ports[i].readBytes(readBuffer, readBuffer.length);
                         System.out.println("Read " + numRead + " bytes.");
