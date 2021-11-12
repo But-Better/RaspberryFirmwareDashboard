@@ -46,6 +46,7 @@ public class PortsController {
         Map<Integer, Map<String, String>> result = new HashMap<>();
 
         if (ports.length != 0) {
+            logger.info("Ports size " + ports.length);
             for (int i = 0; i < ports.length; i++) {
 
                 if (!ports[i].isOpen())

@@ -1,6 +1,5 @@
 package com.butbutter.firmwareDashboard;
 
-import com.fazecast.jSerialComm.SerialPort;
 import com.fazecast.jSerialComm.SerialPortDataListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
