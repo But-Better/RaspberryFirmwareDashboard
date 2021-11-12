@@ -10,7 +10,6 @@ import org.springframework.stereotype.Controller;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicReference;
 
 @Controller
 public class PortsController {
@@ -40,10 +39,11 @@ public class PortsController {
         return serialPortDataListener;
     }
 
-    public Map<String, String> getPorts() {
+    public Map<Integer, Map<String, String>> getPorts() {
         SerialPort[] ports = SerialPort.getCommPorts();
 
         Map<String, String> map = new HashMap<>();
+        Map<Integer, Map<String, String>> result = new HashMap<>();
 
         if (ports.length != 0) {
             for (int i = 0; i < ports.length; i++) {
@@ -86,11 +86,12 @@ public class PortsController {
                 map.put("DeviceWriteBufferSize", String.valueOf(ports[i].getDeviceWriteBufferSize()));
 
                 ports[i].closePort();
+                result.put(i, map);
             }
 
             logger.info(map.toString());
 
-            return new HashMap<>(map);
+            return result;
         }
 
         return null;

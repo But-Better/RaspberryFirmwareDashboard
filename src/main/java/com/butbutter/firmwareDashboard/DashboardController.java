@@ -25,11 +25,6 @@ public class DashboardController {
     @GetMapping("/{id}")
     public ResponseEntity<Object> showOne(@PathVariable int id){
         SerialPortDataListener serialPortDataListener = portsController.readPort(id);
-        try {
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
         return new ResponseEntity<>("Dummy", HttpStatus.OK);
     }
 
