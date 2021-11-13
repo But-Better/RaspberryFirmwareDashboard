@@ -97,6 +97,11 @@ function install_service() {
   WantedBy=multi-user.target' >dashboard.service
 }
 
-default_setup
+# shellcheck disable=SC2170
+if [ "$1" = "z" ]; then
+  zephyr
+else
+  default_setup
+fi
 
 exit 0
