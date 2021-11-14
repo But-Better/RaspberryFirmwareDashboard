@@ -17,7 +17,8 @@ public class PortsController {
     private static final Logger logger = LoggerFactory.getLogger(PortsController.class);
 
     public SerialPortDataListener readPort(int id) {
-        SerialPort comPort = SerialPort.getCommPorts()[0];
+        SerialPort comPort = SerialPort.getCommPorts()[id];
+
         comPort.openPort();
         SerialPortDataListener serialPortDataListener = new SerialPortDataListener() {
             @Override
@@ -31,6 +32,7 @@ public class PortsController {
                     return;
                 byte[] newData = new byte[comPort.bytesAvailable()];
                 int numRead = comPort.readBytes(newData, newData.length);
+                logger.info(Arrays.toString(newData));
                 logger.info("Read " + numRead + " bytes.");
             }
         };
