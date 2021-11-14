@@ -3,9 +3,9 @@
 function default_setup() {
 
   #system update and upgrade
-  sudo apt update -f && sudo apt upgrade
+  sudo apt update && sudo apt upgrade
 
-  sudo apt install vim -f
+  sudo apt install vim
 
   javaAndMaven
 
