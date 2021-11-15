@@ -82,7 +82,9 @@ function install_service() {
   #Create a service after restart or reboot exec ./start.sh
   # shellcheck disable=SC2164
   cd /etc/systemd/system/
-  '[Unit]
+  # shellcheck disable=SC1068
+  # shellcheck disable=SC2034
+  text='[Unit]
   Description=RaspberryFirmwareDashboard
   After=network.target
   StartLimitIntervalSec=0
@@ -94,7 +96,8 @@ function install_service() {
   ExecStart=~/RaspberryFirmwareDashboard/./start.sh
 
   [Install]
-  WantedBy=multi-user.target' >dashboard.service
+  WantedBy=multi-user.target'
+  text >> dashboard.service
 }
 
 # shellcheck disable=SC2170
