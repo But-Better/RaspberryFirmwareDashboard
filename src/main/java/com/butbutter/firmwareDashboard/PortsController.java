@@ -38,7 +38,7 @@ public class PortsController {
                 int numRead = comPort.readBytes(newData, newData.length);
                 //writeToFile(filename, String.valueOf(numRead));
                 //bytes.add(numRead);
-                logger.info("Read " + numRead + " bytes.");
+                logger.info("Read " + Arrays.toString(newData) + " bytes.");
             }
         };
         comPort.addDataListener(serialPortDataListener);
