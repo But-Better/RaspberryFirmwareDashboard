@@ -16,13 +16,14 @@ import java.util.*;
 public class PortsController {
 
     private static final Logger logger = LoggerFactory.getLogger(PortsController.class);
+    private static final int MAX_READABLE_INPUT = 32;
+    private static PortStorage storage = PortStorage.getInstance();
 
     public void readPort(int id) {
         SerialPort comPort = SerialPort.getCommPorts()[id];
 
         final String filename = id + "." + comPort.getDescriptivePortName() + ".txt";
-        createFileInformation(filename);
-        List<Integer> bytes = new LinkedList<>();
+        ArrayList<byte[]> bytes = new ArrayList<>();
         comPort.openPort();
         SerialPortDataListener serialPortDataListener = new SerialPortDataListener() {
             @Override
@@ -35,10 +36,17 @@ public class PortsController {
                 if (event.getEventType() != SerialPort.LISTENING_EVENT_DATA_AVAILABLE)
                     return;
                 byte[] newData = new byte[comPort.bytesAvailable()];
+
                 int numRead = comPort.readBytes(newData, newData.length);
-                //writeToFile(filename, String.valueOf(numRead));
-                //bytes.add(numRead);
+
+                if (bytes.size() >= MAX_READABLE_INPUT) {
+                    bytes.add(newData);
+                } else {
+                    storage.add(bytes);
+                }
+
                 logger.info("Read " + Arrays.toString(newData) + " bytes.");
+                logger.info("numRead " + numRead + " bytes.");
             }
         };
         comPort.addDataListener(serialPortDataListener);
