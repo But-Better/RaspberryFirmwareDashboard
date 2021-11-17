@@ -10,12 +10,12 @@ public class PortStorage {
     private ArrayList<byte[]> bytes;
 
     private PortStorage() {
-        storage = new PortStorage();
     }
 
     public static PortStorage getInstance() {
         if (storage == null) {
-            return storage = new PortStorage();
+            storage = new PortStorage();
+            return storage;
         }
         return storage;
     }
