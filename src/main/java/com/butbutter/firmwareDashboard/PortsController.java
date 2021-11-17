@@ -41,12 +41,15 @@ public class PortsController {
 
                 if (bytes.size() >= MAX_READABLE_INPUT) {
                     bytes.add(newData);
+                    logger.info("byte list" + bytes.size());
                 } else {
                     storage.add(bytes);
+                    logger.info("byte list" + bytes.size());
                 }
 
                 logger.info("Read " + Arrays.toString(newData) + " bytes.");
                 logger.info("numRead " + numRead + " bytes.");
+                logger.info("event.getReceivedData()" + Arrays.toString(event.getReceivedData()));
             }
         };
         comPort.addDataListener(serialPortDataListener);
