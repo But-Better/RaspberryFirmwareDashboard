@@ -7,18 +7,22 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.*;
 
 @Controller
 public class PortsController {
 
     private static final Logger logger = LoggerFactory.getLogger(PortsController.class);
 
-    public SerialPortDataListener readPort(int id) {
+    public void readPort(int id) {
         SerialPort comPort = SerialPort.getCommPorts()[id];
 
+        final String filename = id + "." + comPort.getDescriptivePortName() + ".txt";
+        createFileInformation(filename);
+        List<Integer> bytes = new LinkedList<>();
         comPort.openPort();
         SerialPortDataListener serialPortDataListener = new SerialPortDataListener() {
             @Override
@@ -32,13 +36,12 @@ public class PortsController {
                     return;
                 byte[] newData = new byte[comPort.bytesAvailable()];
                 int numRead = comPort.readBytes(newData, newData.length);
-                logger.info(Arrays.toString(newData));
+                //writeToFile(filename, String.valueOf(numRead));
+                //bytes.add(numRead);
                 logger.info("Read " + numRead + " bytes.");
             }
         };
         comPort.addDataListener(serialPortDataListener);
-
-        return serialPortDataListener;
     }
 
     public Map<Integer, Map<String, String>> getPorts() {
@@ -84,5 +87,30 @@ public class PortsController {
         }
 
         return null;
+    }
+
+    private void createFileInformation(String filename) {
+        final File file = new File(filename);
+        try {
+            if (file.createNewFile()) {
+                logger.info(filename + " was been created");
+            } else {
+                logger.error(filename + "is already exist");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void writeToFile(String filename, String input) {
+        try {
+            FileWriter myWriter = new FileWriter(filename);
+            myWriter.write(input);
+            myWriter.flush();
+            myWriter.close();
+            logger.info("Write into " + filename);
+        } catch (IOException e) {
+            logger.error(e.getMessage());
+        }
     }
 }

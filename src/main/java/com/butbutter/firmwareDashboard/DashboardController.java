@@ -22,9 +22,9 @@ public class DashboardController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Object> showOne(@PathVariable int id){
-        SerialPortDataListener serialPortDataListener = portsController.readPort(id);
-        return new ResponseEntity<>("Dummy", HttpStatus.OK);
+    public ResponseEntity<Object> showOne(@PathVariable int id) {
+        this.portsController.readPort(id);
+        return new ResponseEntity<>(portsController.getPorts(), HttpStatus.OK);
     }
 
 }
