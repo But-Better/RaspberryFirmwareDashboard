@@ -24,7 +24,7 @@ public class DashboardController {
     @GetMapping("/{id}")
     public ResponseEntity<Object> showOne(@PathVariable int id) {
         this.portsController.readPort(id);
-        return new ResponseEntity<>(portsController.getPorts(), HttpStatus.OK);
+        return new ResponseEntity<>("<button>Start</button>", HttpStatus.OK);
     }
 
 }

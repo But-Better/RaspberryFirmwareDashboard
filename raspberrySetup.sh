@@ -11,7 +11,20 @@ function default_setup() {
 
   install_repo
 
+  exportToBashrc
+
   zephyr
+}
+
+function exportToBashrc() {
+  # shellcheck disable=SC2129
+  echo 'export MYSQL_DB_NAME=dashboard_db' >>~/.bashrc
+  # shellcheck disable=SC2016
+  echo 'export MYSQL_DB_HOST=jdbc:mysql://localhost:3310/${MYSQL_DB_NAME}' >>~/.bashrc
+  echo 'export MYSQL_DB_PORT=3306' >>~/.bashrc
+  echo 'export MYSQL_DB_USERNAME=user' >>~/.bashrc
+  echo 'export MYSQL_DB_PASSWORD=password' >>~/.bashrc
+
 }
 
 function zephyr() {
@@ -80,24 +93,24 @@ function install_repo() {
 
 function install_service() {
   #Create a service after restart or reboot exec ./start.sh
+
   # shellcheck disable=SC2164
   cd /etc/systemd/system/
-  # shellcheck disable=SC1068
-  # shellcheck disable=SC2034
-  text='[Unit]
-  Description=RaspberryFirmwareDashboard
-  After=network.target
-  StartLimitIntervalSec=0
-  [Service]
-  Type=simple
-  Restart=always
-  RestartSec=1
-  User=spring
-  ExecStart=~/RaspberryFirmwareDashboard/./start.sh
+  touch dashboard.service
 
-  [Install]
-  WantedBy=multi-user.target'
-  text >> dashboard.service
+  echo '[Unit]
+         Description=RaspberryFirmwareDashboard
+         After=network.target
+         StartLimitIntervalSec=0
+         [Service]
+         Type=simple
+         Restart=always
+         RestartSec=1
+         User=spring
+         ExecStart=~/RaspberryFirmwareDashboard/./start.sh
+
+         [Install]
+         WantedBy=multi-user.target' > dashboard.service
 }
 
 # shellcheck disable=SC2170
