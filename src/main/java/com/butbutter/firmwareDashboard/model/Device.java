@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
+import java.util.Arrays;
 import java.util.UUID;
 
 @Entity
@@ -197,5 +198,26 @@ public class Device {
 
     public void setUuid(UUID uuid) {
         this.uuid = uuid;
+    }
+
+    @Override
+    public String toString() {
+        return "Device{" +
+                "uuid=" + uuid +
+                ", portDescription='" + portDescription + '\'' +
+                ", systemPortName='" + systemPortName + '\'' +
+                ", descriptivePortName='" + descriptivePortName + '\'' +
+                ", CTS='" + CTS + '\'' +
+                ", DCD='" + DCD + '\'' +
+                ", RI='" + RI + '\'' +
+                ", DSR='" + DSR + '\'' +
+                ", DTR='" + DTR + '\'' +
+                ", baudRate='" + baudRate + '\'' +
+                ", flowControlSettings='" + flowControlSettings + '\'' +
+                ", parity='" + parity + '\'' +
+                ", RTS='" + RTS + '\'' +
+                ", date=" + date +
+                ", message=" + Arrays.toString(message) +
+                '}';
     }
 }

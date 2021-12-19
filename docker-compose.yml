@@ -6,10 +6,10 @@ services:
     container_name: "mysqldb-dashboard"
     restart: always
     environment:
-      MYSQL_DATABASE: "$MYSQL_DB_NAME"
-      MYSQL_USER: "MYSQL_DB_USERNAME"
-      MYSQL_PASSWORD: "MYSQL_DB_PASSWORD"
-      MYSQL_ROOT_PASSWORD: "$MYSQL_DB_PASSWORD"
+      MYSQL_DATABASE: "$MYSQL_DASHBOARD_DB_NAME"
+      MYSQL_USER: "MYSQL_DASHBOARD_DB_USERNAME"
+      MYSQL_PASSWORD: "MYSQL_DASHBOARD_DB_PASSWORD"
+      MYSQL_ROOT_PASSWORD: "$MYSQL_DASHBOARD_DB_PASSWORD"
     ports:
       - "3310:3310"
     volumes:
