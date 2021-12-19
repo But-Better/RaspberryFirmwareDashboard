@@ -7,20 +7,18 @@ function default_setup() {
 
   sudo apt install vim
 
-  docker
+  Bash add_docker.sh
 
-  exportToBashrc
+  Bash add_bashrc.sh
 
-  javaAndMaven
+  Bash add_javaAndMaven.sh
 
   install_repo
-
-  zephyr
 }
 
 function install_repo() {
   # shellcheck disable=SC2164
-  cd /home/pi/Documents/
+  cd ~
   git clone https://github.com/But-Better/RaspberryFirmwareDashboard.git
   # shellcheck disable=SC2164
   cd RaspberryFirmwareDashboard/
@@ -31,7 +29,7 @@ function install_repo() {
 
 # shellcheck disable=SC2170
 if [ "$1" = "z" ]; then
-  zephyr
+  Bash add_zephr.sh
 else
   default_setup
 fi
