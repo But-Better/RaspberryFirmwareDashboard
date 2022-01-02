@@ -1,3 +1,5 @@
+#!/bin/bash
+
 function javaAndMaven() {
   #Java installation
   sudo apt install default-jdk -f
@@ -12,3 +14,5 @@ function javaAndMaven() {
 
   sudo apt-get install apache2 -f
 }
+
+javaAndMaven

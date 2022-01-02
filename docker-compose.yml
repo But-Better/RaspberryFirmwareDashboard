@@ -4,16 +4,17 @@ services:
   db:
     image: mysql
     container_name: "mysqldb-dashboard"
-    restart: always
+    restart: on-failure
     environment:
-      MYSQL_DATABASE: "$MYSQL_DASHBOARD_DB_NAME"
-      MYSQL_USER: "MYSQL_DASHBOARD_DB_USERNAME"
-      MYSQL_PASSWORD: "MYSQL_DASHBOARD_DB_PASSWORD"
-      MYSQL_ROOT_PASSWORD: "$MYSQL_DASHBOARD_DB_PASSWORD"
+      MYSQL_DATABASE: "dashboard_db"
+      MYSQL_USER: "user"
+      MYSQL_PASSWORD: "password"
+      MYSQL_ROOT_PASSWORD: "password"
     ports:
-      - "3310:3310"
+      - "3306:3306"
     volumes:
-      - my-db:/var/lib/mysql-dashboard
+      - dashboard-db:/var/lib/mysql-dashboard
 
 volumes:
-  my-db:
+  dashboard-db:
+

@@ -1,6 +1,6 @@
-package com.butbutter.firmwareDashboard;
+package com.butbutter.firmwareDashboard.controller;
 
-import com.fazecast.jSerialComm.SerialPortDataListener;
+import com.butbutter.firmwareDashboard.service.PortsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,17 +13,21 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("Dashboard/v1/")
 public class DashboardController {
 
+    private PortsService portsService;
+
     @Autowired
-    private PortsController portsController;
+    public DashboardController(PortsService portsService) {
+        this.portsService = portsService;
+    }
 
     @GetMapping("/")
     public ResponseEntity<Object> showAll() {
-        return new ResponseEntity<>(portsController.getPorts(), HttpStatus.OK);
+        return new ResponseEntity<>(portsService.getPorts(), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Object> showOne(@PathVariable int id) {
-        this.portsController.readPort(id);
+        this.portsService.readPort(id);
         return new ResponseEntity<>("<button>Start</button>", HttpStatus.OK);
     }
 

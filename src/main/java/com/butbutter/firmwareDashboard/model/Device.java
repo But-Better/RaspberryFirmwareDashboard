@@ -92,6 +92,25 @@ public class Device {
         this.message = message;
     }
 
+    public Device(String portDescription, String systemPortName, String descriptivePortName, String CTS, String DCD, String RI, String DSR,
+                  String DTR, String baudRate, String flowControlSettings, String parity, String RTS, Long date, byte[] message) {
+        this.uuid = UUID.randomUUID();
+        this.portDescription = portDescription;
+        this.systemPortName = systemPortName;
+        this.descriptivePortName = descriptivePortName;
+        this.CTS = CTS;
+        this.DCD = DCD;
+        this.RI = RI;
+        this.DSR = DSR;
+        this.DTR = DTR;
+        this.baudRate = baudRate;
+        this.flowControlSettings = flowControlSettings;
+        this.parity = parity;
+        this.RTS = RTS;
+        this.date = System.currentTimeMillis();
+        this.message = message;
+    }
+
     public Device() {
 
     }

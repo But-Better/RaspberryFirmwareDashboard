@@ -19,3 +19,5 @@ function install_service() {
          [Install]
          WantedBy=multi-user.target' >dashboard.service
 }
+
+install_service

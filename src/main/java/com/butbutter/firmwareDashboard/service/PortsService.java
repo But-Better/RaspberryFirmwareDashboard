@@ -1,21 +1,21 @@
-package com.butbutter.firmwareDashboard;
+package com.butbutter.firmwareDashboard.service;
 
+import com.butbutter.firmwareDashboard.PortManagement;
 import com.fazecast.jSerialComm.SerialPort;
 import com.fazecast.jSerialComm.SerialPortDataListener;
 import com.fazecast.jSerialComm.SerialPortEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Service;
 
-import javax.sound.sampled.Port;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-@Controller
-public class PortsController {
+@Service
+public class PortsService {
 
-    private static final Logger logger = LoggerFactory.getLogger(PortsController.class);
+    private static final Logger logger = LoggerFactory.getLogger(PortsService.class);
 
     private static PortManagement storage = PortManagement.getInstance();
 
