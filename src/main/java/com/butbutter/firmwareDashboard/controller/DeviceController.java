@@ -1,6 +1,7 @@
 package com.butbutter.firmwareDashboard.controller;
 
 import com.butbutter.firmwareDashboard.repository.DeviceRepository;
+import com.butbutter.firmwareDashboard.service.DeviceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,25 +16,22 @@ import java.util.UUID;
 public class DeviceController {
 
     private DeviceRepository deviceRepository;
+    private DeviceService deviceService;
 
     @Autowired
-    public DeviceController(DeviceRepository deviceRepository) {
+    public DeviceController(DeviceRepository deviceRepository, DeviceService deviceService) {
         this.deviceRepository = deviceRepository;
+        this.deviceService = deviceService;
     }
 
     @GetMapping("/")
     public ResponseEntity<?> all() {
-        return ResponseEntity.ok().body(
-                this.deviceRepository.findAll()
-        );
+        return this.deviceService.all();
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> one(@PathVariable UUID id) {
-        return ResponseEntity.ok().body(
-                this.deviceRepository.findById(id)
-                        .orElse(null)
-        );
+        return this.deviceService.one(id);
     }
 
 }

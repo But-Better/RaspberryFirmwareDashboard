@@ -1,65 +1,29 @@
 package com.butbutter.firmwareDashboard.model;
 
-import com.sun.istack.NotNull;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.UUID;
 
-@Entity
-@Table(schema = "Device")
-public class Device implements Serializable {
-    @Id
-    @Column(name = "uuid", nullable = false, insertable = false)
+public class DeviceJson implements Serializable {
+
     private UUID uuid;
-
-    @NotNull
-    @NotBlank
     private String portDescription;
-
-    @NotNull
-    @NotBlank
     private String systemPortName;
-
-    @NotNull
-    @NotBlank
     private String descriptivePortName;
-
     private boolean CTS;
-
     private boolean DCD;
-
     private boolean RI;
-
     private boolean DSR;
-
     private boolean DTR;
-
     private boolean RTS;
-
     private int baudRate;
-
     private int flowControlSettings;
-
     private int parity;
-
-    @NotNull
-    @NotBlank
     private Long date;
-
-    @NotNull
-    @NotBlank
     private byte[] message;
 
-    public Device(UUID uuid, String portDescription, String systemPortName, String descriptivePortName,
-                  boolean CTS, boolean DCD, boolean RI, boolean DSR, boolean DTR, boolean RTS,
-                  int baudRate, int flowControlSettings, int parity, Long date,
-                  @NotBlank byte[] message) {
+    public DeviceJson(UUID uuid, String portDescription, String systemPortName, String descriptivePortName,
+                      boolean CTS, boolean DCD, boolean RI, boolean DSR, boolean DTR, boolean RTS,
+                      int baudRate, int flowControlSettings, int parity, Long date, byte[] message) {
         this.uuid = uuid;
         this.portDescription = portDescription;
         this.systemPortName = systemPortName;
@@ -77,29 +41,7 @@ public class Device implements Serializable {
         this.message = message;
     }
 
-    public Device(String portDescription, String systemPortName, String descriptivePortName,
-                  boolean CTS, boolean DCD, boolean RI, boolean DSR, boolean DTR, boolean RTS,
-                  int baudRate, int flowControlSettings, int parity,
-                  @NotBlank byte[] message) {
-        this.uuid = UUID.randomUUID();
-        this.portDescription = portDescription;
-        this.systemPortName = systemPortName;
-        this.descriptivePortName = descriptivePortName;
-        this.CTS = CTS;
-        this.DCD = DCD;
-        this.RI = RI;
-        this.DSR = DSR;
-        this.DTR = DTR;
-        this.RTS = RTS;
-        this.baudRate = baudRate;
-        this.flowControlSettings = flowControlSettings;
-        this.parity = parity;
-        this.date = System.currentTimeMillis();
-        this.message = message;
-    }
-
-    public Device() {
-
+    public DeviceJson() {
     }
 
     public UUID getUuid() {
@@ -220,26 +162,5 @@ public class Device implements Serializable {
 
     public void setMessage(byte[] message) {
         this.message = message;
-    }
-
-    @Override
-    public String toString() {
-        return "Device{" +
-                "uuid=" + uuid +
-                ", portDescription='" + portDescription + '\'' +
-                ", systemPortName='" + systemPortName + '\'' +
-                ", descriptivePortName='" + descriptivePortName + '\'' +
-                ", CTS=" + CTS +
-                ", DCD=" + DCD +
-                ", RI=" + RI +
-                ", DSR=" + DSR +
-                ", DTR=" + DTR +
-                ", RTS=" + RTS +
-                ", baudRate=" + baudRate +
-                ", flowControlSettings=" + flowControlSettings +
-                ", parity=" + parity +
-                ", date=" + date +
-                ", message=" + Arrays.toString(message) +
-                '}';
     }
 }

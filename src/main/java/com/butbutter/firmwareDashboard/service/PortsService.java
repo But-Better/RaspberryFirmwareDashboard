@@ -1,16 +1,19 @@
 package com.butbutter.firmwareDashboard.service;
 
 import com.butbutter.firmwareDashboard.PortManagement;
+import com.butbutter.firmwareDashboard.model.Device;
+import com.butbutter.firmwareDashboard.model.DeviceJson;
 import com.fazecast.jSerialComm.SerialPort;
 import com.fazecast.jSerialComm.SerialPortDataListener;
 import com.fazecast.jSerialComm.SerialPortEvent;
+import com.fazecast.jSerialComm.SerialPortTimeoutException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.io.*;
+import java.util.*;
 
 @Service
 public class PortsService {
@@ -19,12 +22,18 @@ public class PortsService {
 
     private static PortManagement storage = PortManagement.getInstance();
 
+    private final DeviceService deviceService;
+
+    private final OutputStream outputStream;
+
+    @Autowired
+    public PortsService(DeviceService deviceService) {
+        this.deviceService = deviceService;
+        this.outputStream = new ByteArrayOutputStream();
+    }
+
     public void readPort(int id) {
         SerialPort comPort = SerialPort.getCommPorts()[id];
-
-        final String filename = id + "." + comPort.getDescriptivePortName() + ".txt";
-
-        byte[] input = new byte[10];
         comPort.openPort();
         SerialPortDataListener serialPortDataListener = new SerialPortDataListener() {
             @Override
@@ -37,67 +46,96 @@ public class PortsService {
                 if (event.getEventType() != SerialPort.LISTENING_EVENT_DATA_AVAILABLE)
                     return;
 
-                byte[] readBuffer = new byte[1024];
-                int numRead = comPort.readBytes(readBuffer, readBuffer.length);
-                System.out.println("Read " + numRead + " bytes.");
-                logger.info(Arrays.toString(readBuffer));
-                PortManagement.getInstance().writeToFile(input, comPort.getDescriptivePortName());
+                byte[] readBuffer = event.getReceivedData();
+                try {
+                    outputStream.write(readBuffer);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
 
-                //logger.info("Read " + Arrays.toString(newData) + " bytes.");
-                //logger.info("numRead " + numRead + " bytes.");
-                //logger.info("event.getReceivedData()" + Arrays.toString(event.getReceivedData()));
+                System.out.println("Received data of size " + readBuffer.length);
+                for (byte b : readBuffer) {
+                    System.out.println((char) b);
+                }
+                System.out.println("\n");
             }
         };
+
         comPort.addDataListener(serialPortDataListener);
         comPort.setComPortTimeouts(0, PortManagement.MAX_READING_TIME, PortManagement.MAX_READING_TIME);
         comPort.removeDataListener();
         comPort.closePort();
     }
 
-    public Map<Integer, Map<String, String>> getPorts() {
+    public long getOutputStream() {
+        try {
+            return new ByteArrayInputStream(new byte[1024]).transferTo(this.outputStream);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    public List<DeviceJson> getPorts() {
         SerialPort[] ports = SerialPort.getCommPorts();
 
-        Map<String, String> map = new HashMap<>();
-        Map<Integer, Map<String, String>> result = new HashMap<>();
-
         if (ports.length != 0) {
-            logger.info("Ports size " + ports.length);
-            for (int i = 0; i < ports.length; i++) {
-
-                ports[i].openPort();
-
-                map.put("isOpen", String.valueOf(ports[i].isOpen()));
-                map.put("Id", String.valueOf(i));
-                map.put("PortDescription", ports[i].getPortDescription());
-                map.put("SystemPortName", ports[i].getSystemPortName());
-                map.put("DescriptivePortName", ports[i].getDescriptivePortName());
-                map.put("bytesAvailable", String.valueOf(ports[i].bytesAvailable()));
-                map.put("CTS", String.valueOf(ports[i].getCTS()));
-                map.put("DCD", String.valueOf(ports[i].getDCD()));
-                map.put("RI", String.valueOf(ports[i].getRI()));
-                map.put("DSR", String.valueOf(ports[i].getDSR()));
-                map.put("DTR", String.valueOf(ports[i].getDTR()));
-                map.put("NumDataBits", String.valueOf(ports[i].getNumDataBits()));
-                map.put("BaudRate", String.valueOf(ports[i].getBaudRate()));
-                map.put("FlowControlSettings", String.valueOf(ports[i].getFlowControlSettings()));
-                map.put("Parity", String.valueOf(ports[i].getParity()));
-                map.put("RTS", String.valueOf(ports[i].getRTS()));
-                map.put("OutputStream", String.valueOf(ports[i].getOutputStream()));
-                map.put("InputStream", String.valueOf(ports[i].getInputStream()));
-                map.put("ReadTimeout", String.valueOf(ports[i].getReadTimeout()));
-                map.put("Class", String.valueOf(ports[i].getClass()));
-                map.put("DeviceReadBufferSize", String.valueOf(ports[i].getDeviceReadBufferSize()));
-                map.put("DeviceWriteBufferSize", String.valueOf(ports[i].getDeviceWriteBufferSize()));
-
-                result.put(i, map);
-                ports[i].closePort();
-            }
-
-            logger.info(map.toString());
-
-            return result;
+            return this.toJsonMap(ports);
         }
 
         return null;
+    }
+
+    private synchronized List<DeviceJson> toJsonMap(SerialPort[] ports) {
+        List<DeviceJson> list = new LinkedList<>();
+        logger.info("Ports size " + ports.length);
+
+        for (SerialPort port : ports) {
+
+            port.openPort();
+            byte[] arr = new byte[1024];
+
+            try {
+                Thread.sleep(1000);
+                arr = port.getInputStream().readAllBytes();
+            } catch (SerialPortTimeoutException e) {
+                logger.info(e.getMessage());
+            } catch (InterruptedException | IOException e) {
+                logger.error(e.getMessage());
+            }
+
+            UUID uuid = UUID.randomUUID();
+
+            list.add(new DeviceJson(
+                    uuid,
+                    port.getPortDescription(),
+                    port.getSystemPortName(),
+                    port.getDescriptivePortName(),
+                    port.getCTS(), port.getDCD(), port.getRI(), port.getDSR(), port.getDTR(), port.getRTS(),
+                    port.getBaudRate(),
+                    port.getFlowControlSettings(),
+                    port.getParity(),
+                    System.currentTimeMillis(),
+                    arr
+            ));
+
+            this.deviceService.add(new Device(
+                    uuid,
+                    port.getPortDescription(),
+                    port.getSystemPortName(),
+                    port.getDescriptivePortName(),
+                    port.getCTS(), port.getDCD(), port.getRI(), port.getDSR(), port.getDTR(), port.getRTS(),
+                    port.getBaudRate(),
+                    port.getFlowControlSettings(),
+                    port.getParity(),
+                    System.currentTimeMillis(),
+                    arr
+            ));
+
+            port.closePort();
+        }
+
+        logger.info(list.toString());
+        return list;
     }
 }
