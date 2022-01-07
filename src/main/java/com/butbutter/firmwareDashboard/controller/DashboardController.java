@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 @RestController
 @RequestMapping("Dashboard/v1/")
 public class DashboardController {
@@ -32,7 +35,7 @@ public class DashboardController {
     @GetMapping("/{id}")
     public ResponseEntity<Object> showOne(@PathVariable int id) {
         this.portsService.readPort(id);
-        return new ResponseEntity<>("<button>Start</button>", HttpStatus.OK);
+        return new ResponseEntity<>(this.portsService.getStorageList(), HttpStatus.OK);
     }
 
 }
