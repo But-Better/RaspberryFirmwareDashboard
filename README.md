@@ -1,3 +1,3 @@
 # RaspberryFirmwareDashboard
 
-it's a dahsboat
+it's a DASHBOARD
